@@ -14,6 +14,7 @@ return new class extends Migration
     Schema::create('user_details', function (Blueprint $table) {
         $table->id();
         $table->string('name');
+         $table->string('email')->unique();
         $table->decimal('monthly_salary', 8, 2);
         $table->timestamps();
     });

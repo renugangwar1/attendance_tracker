@@ -1,77 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User List - Attendance System</title>
+    <title>User Dashboard - Attendance System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .sidebar a,
+        .sidebar form button {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .sidebar a.btn-info { background-color: #17a2b8; }
+        .sidebar a.btn-success { background-color: #28a745; }
+        .sidebar a.btn-primary { background-color: #007bff; }
+        .sidebar a.btn-warning { background-color: #ffc107; color: black; }
+        .sidebar form button { background-color: #dc3545; border: none; cursor: pointer; }
+
+        .main-content {
+            flex-grow: 1;
             padding: 30px;
         }
+
         h2 {
             color: #333;
         }
+
         table {
             border-collapse: collapse;
             width: 100%;
             margin-top: 15px;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 10px 15px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
-        }
-        .btn {
-            padding: 6px 12px;
-            text-decoration: none;
-            border-radius: 4px;
-            color: white;
-        }
-        .btn-primary {
-            background-color: #007bff;
-        }
-        .btn-info {
-            background-color: #17a2b8;
-        }
-        .btn-success {
-            background-color: #28a745;
         }
     </style>
 </head>
 <body>
 
-    <h2>User List</h2>
+<div class="container">
 
-    <a href="{{ route('users.create') }}" class="btn btn-primary">Add New User</a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <a href="{{ route('attendance.calendar', auth()->user()->id) }}" class="btn btn-info">Mark Attendance</a>
+        <a href="{{ route('salary.calculate', auth()->user()->id) }}" class="btn btn-success">Monthly Total</a>
+        <a href="{{ route('salary.summary', auth()->user()->id) }}" class="btn btn-primary">Full Summary</a>
+        <a href="{{ route('users.create') }}" class="btn btn-warning">Setup</a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit">Logout</button>
+        </form>
+    </div>
 
-    @if($users->count())
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Welcome, {{ auth()->user()->name }}</h2>
+
+        @if(session('success'))
+            <p style="color: green;">{{ session('success') }}</p>
+        @endif
+
         <table>
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Monthly Salary (₹)</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($users as $user)
                 <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ number_format($user->monthly_salary, 2) }}</td>
-                    <td>
-                       <a href="{{ route('attendance.calendar', $user->id) }}" class="btn btn-info">Mark Attendance</a>
-    <a href="{{ route('salary.calculate', $user->id) }}" class="btn btn-success">Monthly Total</a>
-    <a href="{{ route('salary.summary', $user->id) }}" class="btn btn-primary">Full Summary</a>
-                    </td>
+                    <td>{{ auth()->user()->name }}</td>
+                    <td>{{ number_format(auth()->user()->monthly_salary, 2) }}</td>
                 </tr>
-                @endforeach
             </tbody>
         </table>
-    @else
-        <p>No users found.</p>
-    @endif
+    </div>
+
+</div>
 
 </body>
 </html>

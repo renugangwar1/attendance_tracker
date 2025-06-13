@@ -7,9 +7,67 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+    background-color: #fff;
+    padding: 15px 25px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.top-bar .back-link {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.top-bar .back-link:hover {
+    background-color: #0056b3;
+}
+
+.top-bar .attendance-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+
+        .back-link {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+
         #calendar {
             max-width: 900px;
-            margin: 40px auto;
+            margin: 20px auto;
         }
 
         #attendance-popup {
@@ -23,19 +81,25 @@
             z-index: 999;
         }
 
-        #attendance-popup select {
-            padding: 5px;
-        }
-
+        #attendance-popup select,
         #attendance-popup button {
             margin-top: 8px;
             padding: 5px 10px;
+        }
+
+        #attendance-popup select {
+            width: 100%;
         }
     </style>
 </head>
 <body>
 
-<h2 style="text-align:center">{{ $user->name }}'s Attendance</h2>
+<div class="top-bar">
+    <a href="{{ route('users.index') }}" class="back-link">← Back to Dashboard</a>
+    <div class="attendance-heading">{{ $user->name }}'s Attendance</div>
+</div>
+
+
 
 <div id='calendar'></div>
 
@@ -58,20 +122,19 @@
     let selectedDate = '';
     let calendar;
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         let calendarEl = document.getElementById('calendar');
 
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             events: {!! json_encode($events) !!},
-            dateClick: function(info) {
+            dateClick: function (info) {
                 selectedDate = info.dateStr;
 
                 const popup = document.getElementById('attendance-popup');
                 const popupText = document.getElementById('popup-date-text').querySelector('span');
                 popupText.innerText = selectedDate;
 
-                // Show the popup near the mouse position
                 popup.style.left = info.jsEvent.pageX + 'px';
                 popup.style.top = info.jsEvent.pageY + 'px';
                 popup.style.display = 'block';
@@ -116,4 +179,5 @@
 </script>
 
 </body>
+
 </html>

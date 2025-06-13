@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserDetail extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'monthly_salary'];
+    protected $fillable = ['name','email', 'monthly_salary'];
 
     public function attendances()
 {
