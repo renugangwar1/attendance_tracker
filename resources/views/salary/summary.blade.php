@@ -7,40 +7,47 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f1f5f9;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
         .top-bar {
+            width: 100%;
             background-color: #ffffff;
-            padding: 15px 30px;
+            padding: 15px 25px;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
-            margin-bottom: 40px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .back-link {
-            background-color: #2563eb;
+            background-color: #3b82f6;
             color: #ffffff;
             padding: 10px 18px;
-            border-radius: 8px;
+            border-radius: 6px;
             text-decoration: none;
             font-size: 15px;
             font-weight: 500;
-            transition: background-color 0.2s ease;
+            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+            transition: background-color 0.25s ease, transform 0.2s ease;
         }
 
         .back-link:hover {
-            background-color: #1d4ed8;
+            background-color: #2563eb;
+            transform: translateY(-1px);
         }
 
-       .card-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Force 4 cards in a row */
-    gap: 24px;
-}
+        .card-container {
+            padding: 100px 20px 20px; /* Add top padding to push content below fixed top bar */
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
 
         .month-card {
             background-color: #ffffff;
@@ -109,26 +116,27 @@
             color: #1f2937;
         }
 
-@media (max-width: 1200px) {
-    .card-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
+        @media (max-width: 1200px) {
+            .card-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
 
-@media (max-width: 900px) {
-    .card-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
+        @media (max-width: 900px) {
+            .card-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
-@media (max-width: 600px) {
-    .card-container {
-        grid-template-columns: 1fr;
-    }
-}
+        @media (max-width: 600px) {
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="top-bar">
         <a href="{{ route('users.index') }}" class="back-link">← Back to Dashboard</a>
     </div>
@@ -137,7 +145,6 @@
         @foreach ($monthly_summary as $month => $data)
             <div class="month-card">
                 <h3>{{ \Carbon\Carbon::parse($month)->format('F Y') }}</h3>
-
                 <table>
                     <thead>
                         <tr>
@@ -156,7 +163,6 @@
                         @endforeach
                     </tbody>
                 </table>
-
                 <div class="summary">
                     <p><strong>Working Days:</strong> {{ $data['working_days'] }}</p>
                     <p><strong>Per Day Salary:</strong> ₹{{ number_format($data['per_day_salary'], 2) }}</p>
@@ -168,5 +174,6 @@
             </div>
         @endforeach
     </div>
+
 </body>
 </html>

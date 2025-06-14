@@ -96,9 +96,20 @@
         }
 
         .edit-button a:hover,
-        .back-link:hover {
-            text-decoration: underline;
-            background-color: #0056b3;
+       .back-link {
+    display: inline-block;
+    text-align: center;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+
         }
 
         .error-messages {
@@ -128,7 +139,7 @@
     @if (isset($user))
         @if (request()->query('edit') == 'true')
             <h2>Edit Your Details</h2>
-
+<p><em>Note: Please fill in the <strong>Monthly In-Hand Salary</strong> and <strong>Working Days</strong> as per your salary calculation.</em></p>
             @if ($errors->any())
                 <div class="error-messages">
                     <ul>
@@ -163,6 +174,7 @@
         @endif
     @else
         <h2>Add Your Details</h2>
+<p><em>Note: Please fill in the <strong>Monthly In-Hand Salary</strong> and <strong>Working Days</strong> as per your salary calculation.</em></p>
 
         @if ($errors->any())
             <div class="error-messages">
