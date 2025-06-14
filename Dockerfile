@@ -38,7 +38,8 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["/usr/local/bin/entrypoint.sh"]
+
 
 # Change Apache document root
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
