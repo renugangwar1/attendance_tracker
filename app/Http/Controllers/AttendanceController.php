@@ -53,13 +53,27 @@ public function mark(Request $request)
 
     return response()->json(['message' => 'Attendance marked successfully.']);
 }
+public function unmark(Request $request)
+{
+    $request->validate([
+        'user_detail_id' => 'required|exists:user_details,id',
+        'date' => 'required|date',
+    ]);
+
+    Attendance::where('user_detail_id', $request->user_detail_id)
+        ->where('date', $request->date)
+        ->delete();
+
+    return response()->json(['message' => 'Attendance removed successfully.']);
+}
+
 
 private function computeSalary(UserDetail $user, Collection $attendances, string $month)
 {
     $start = Carbon::parse($month . '-01');
     $end = $start->copy()->endOfMonth();
 
-    $working_days = [];
+   $fixed_working_days = $user->working_days; 
     $days_data = [];
     $present = 0;
     $absent = 0;
@@ -67,8 +81,6 @@ private function computeSalary(UserDetail $user, Collection $attendances, string
 
     for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
         $date_str = $date->toDateString();
-        $day_name = $date->format('D');
-        $is_weekend = in_array($day_name, ['Sat', 'Sun']);
         $status = $attendances->has($date_str) ? $attendances[$date_str]->status : null;
 
         $days_data[] = [
@@ -76,28 +88,25 @@ private function computeSalary(UserDetail $user, Collection $attendances, string
             'status' => $status ?? 'unmarked',
         ];
 
-        if (!$is_weekend) {
-            $working_days[] = $date_str;
-
-            if ($status === 'absent') $absent++;
-            if ($status === 'present') $present++;
-        }
-
+        if ($status === 'present') $present++;
+        if ($status === 'absent') $absent++;
         if ($status === 'overtime') $overtime++;
     }
 
-    $working_days_count = count($working_days);
-    $per_day_salary = $working_days_count > 0 ? $user->monthly_salary / $working_days_count : 0;
+    // Calculate per-day salary based on fixed 22 working days
+    $per_day_salary = $user->monthly_salary / $fixed_working_days;
 
-    // Treat unmarked weekdays as present unless marked absent
-    $unmarked_present = $working_days_count - $present - $absent;
-    $total_present = $present + $unmarked_present;
+    // Assume unmarked days (from 22) are present unless marked absent
+    $marked_days = $present + $absent;
+    $unmarked_days = max(0, $fixed_working_days - $marked_days);
+    $total_present = $present + $unmarked_days;
 
+    // Final salary calculation
     $salary = round(($total_present + $overtime) * $per_day_salary, 2);
 
     return [
         'days' => $days_data,
-        'working_days' => $working_days_count,
+        'working_days' => $fixed_working_days,
         'present' => $total_present,
         'absent' => $absent,
         'overtime' => $overtime,
@@ -105,7 +114,6 @@ private function computeSalary(UserDetail $user, Collection $attendances, string
         'salary' => $salary,
     ];
 }
-
 public function calculateSalary(UserDetail $user, Request $request)
 {
     $month = $request->input('month', now()->format('Y-m'));
@@ -147,6 +155,7 @@ public function download(Request $request, $id)
     $pdf = Pdf::loadView('pdf.salary', compact('user', 'data', 'month'));
     return $pdf->download('Salary-Summary-' . $user->name . '-' . $month . '.pdf');
 }
+
 
 
 }

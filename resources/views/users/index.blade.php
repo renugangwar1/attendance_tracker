@@ -1,71 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Dashboard - Attendance System</title>
+    <meta charset="UTF-8">
+    <title>Dashboard | Attendance System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
         }
 
         .container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .sidebar {
-            width: 220px;
-            background-color: #f8f9fa;
+            width: 250px;
+            background-color: #343a40;
+            color: white;
             padding: 20px;
-            border-right: 1px solid #ddd;
         }
 
-        .sidebar h3 {
-            margin-bottom: 20px;
-            color: #333;
+        .sidebar h2 {
+            color: #fff;
+            margin-bottom: 30px;
         }
 
         .sidebar a,
         .sidebar form button {
-            display: block;
-            margin-bottom: 10px;
-            padding: 10px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: #495057;
+            border-radius: 6px;
             text-decoration: none;
             color: white;
-            border-radius: 4px;
-            text-align: center;
+            font-size: 15px;
+            transition: background 0.3s ease;
         }
 
-        .sidebar a.btn-info { background-color: #17a2b8; }
-        .sidebar a.btn-success { background-color: #28a745; }
-        .sidebar a.btn-primary { background-color: #007bff; }
-        .sidebar a.btn-warning { background-color: #ffc107; color: black; }
-        .sidebar form button { background-color: #dc3545; border: none; cursor: pointer; }
+        .sidebar a:hover,
+        .sidebar form button:hover {
+            background-color: #6c757d;
+        }
+
+        .sidebar i {
+            margin-right: 10px;
+        }
 
         .main-content {
             flex-grow: 1;
-            padding: 30px;
+            padding: 40px;
         }
 
-        h2 {
-            color: #333;
+        .main-content h2 {
+            margin-bottom: 20px;
+            color: #343a40;
         }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 15px;
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            max-width: 600px;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px 15px;
-            text-align: left;
+        .card h3 {
+            color: #444;
+            margin-bottom: 10px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .card p {
+            font-size: 16px;
+            color: #666;
         }
+
+        .alert {
+            margin-top: 10px;
+            color: green;
+            font-weight: 500;
+        }
+
     </style>
 </head>
 <body>
@@ -74,14 +95,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h3>Menu</h3>
-        <a href="{{ route('attendance.calendar', auth()->user()->id) }}" class="btn btn-info">Mark Attendance</a>
-        <a href="{{ route('salary.calculate', auth()->user()->id) }}" class="btn btn-success">Monthly Total</a>
-        <a href="{{ route('salary.summary', auth()->user()->id) }}" class="btn btn-primary">Full Summary</a>
-        <a href="{{ route('users.create') }}" class="btn btn-warning">Setup</a>
+        <h2>Dashboard</h2>
+        <a href="{{ route('attendance.calendar', auth()->user()->id) }}"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+        <a href="{{ route('salary.calculate', auth()->user()->id) }}"><i class="fas fa-wallet"></i> Monthly Total</a>
+        <a href="{{ route('salary.summary', auth()->user()->id) }}"><i class="fas fa-file-invoice-dollar"></i> Full Summary</a>
+        <a href="{{ route('users.create') }}"><i class="fas fa-user-cog"></i> Setup</a>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit">Logout</button>
+            <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </form>
     </div>
 
@@ -90,23 +111,18 @@
         <h2>Welcome, {{ auth()->user()->name }}</h2>
 
         @if(session('success'))
-            <p style="color: green;">{{ session('success') }}</p>
+            <div class="alert">{{ session('success') }}</div>
         @endif
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Monthly Salary (₹)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ auth()->user()->name }}</td>
-                    <td>{{ number_format(auth()->user()->monthly_salary, 2) }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="card">
+            <h3>Account Overview</h3>
+            <p><strong>Name:</strong> {{ auth()->user()->name }}</p>
+            <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
+            {{-- You may conditionally show salary like below --}}
+            @if(auth()->user()->is_admin) 
+                <p><strong>Monthly Salary:</strong> ₹{{ number_format(auth()->user()->detail->monthly_salary, 2) }}</p>
+            @endif
+        </div>
     </div>
 
 </div>

@@ -16,6 +16,7 @@ return new class extends Migration
         $table->string('name');
          $table->string('email')->unique();
         $table->decimal('monthly_salary', 8, 2);
+         $table->integer('working_days')->default(22);
         $table->timestamps();
     });
 }

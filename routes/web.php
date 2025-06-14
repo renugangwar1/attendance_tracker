@@ -40,11 +40,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/attendance/{user}', [AttendanceController::class, 'calendar'])->name('attendance.calendar');
     Route::post('/attendance/mark', [AttendanceController::class, 'mark'])->name('attendance.mark');
+    Route::post('/attendance/unmark', [AttendanceController::class, 'unmark'])->name('attendance.unmark');
+
 
     Route::get('/salary/calculate/{user}', [AttendanceController::class, 'calculateSalary'])->name('salary.calculate');
     Route::get('/salary/summary/{id}', [AttendanceController::class, 'showSalary'])->name('salary.summary');
     Route::get('/salary/{id}', [AttendanceController::class, 'showSalary'])->name('salary.show');
     Route::get('/salary/{id}/download', [AttendanceController::class, 'download'])->name('salary.download');
+Route::get('/users/{id}/edit', [UserDetailController::class, 'edit'])->name('users.edit');
+Route::put('/users/{id}', [UserDetailController::class, 'update'])->name('users.update');
 
 });
 
