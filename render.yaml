@@ -5,12 +5,6 @@ services:
     plan: free
     branch: main
     dockerfilePath: ./Dockerfile
-    buildCommand: |
-      composer install --no-dev --optimize-autoloader
-      php artisan config:clear
-      php artisan config:cache
-      php artisan key:generate
-      php artisan migrate --force
     envVars:
       - key: APP_ENV
         value: production
@@ -21,7 +15,7 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-db-host.render.com   # Update with actual MySQL host
+        value: your-db-host.render.com
       - key: DB_PORT
         value: 3306
       - key: DB_DATABASE
