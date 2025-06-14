@@ -11,7 +11,7 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        value: # Set this manually in Render dashboard after first deploy
+        value: # Set manually in Render after deployment
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
@@ -23,4 +23,10 @@ services:
       - key: DB_USERNAME
         value: root
       - key: DB_PASSWORD
-        value: your-db-password
+        value: # Set securely in Render dashboard
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
