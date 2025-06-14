@@ -33,16 +33,17 @@ RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 # 👉 Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# 👉 Laravel setup commands
-RUN php artisan config:clear && \
-    php artisan config:cache && \
-    php artisan key:generate && \
-    php artisan migrate --force
+# Copy entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# 👉 Change Apache doc root to /public
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Change Apache document root
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
 RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf && \
     sed -ri -e 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 EXPOSE 80
+
