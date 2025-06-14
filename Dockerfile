@@ -16,8 +16,9 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     default-libmysqlclient-dev \
-    netcat && \
+    netcat-traditional && \
     docker-php-ext-install pdo pdo_mysql zip
+
 
 
 # Install Composer
