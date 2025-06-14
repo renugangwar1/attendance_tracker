@@ -14,6 +14,9 @@ if [ -f .env ]; then
   php artisan config:clear
   php artisan config:cache
   php artisan key:generate
+if [ ! -f database/database.sqlite ]; then
+  touch database/database.sqlite
+fi
 
   # Optional: use only if needed in production
   if [ "$APP_ENV" = "production" ]; then
