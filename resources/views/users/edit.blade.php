@@ -2,9 +2,7 @@
 <html>
 <head>
     <title>Edit Your Details</title>
-    <style>
-        /* same styles as your add form */
-    </style>
+   
 </head>
 <body>
 

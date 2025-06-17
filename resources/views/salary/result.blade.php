@@ -61,7 +61,9 @@
 
     <div class="summary">
         <p><strong>Working Days:</strong> {{ $data['working_days'] }}</p>
-        <p><strong>Per Day Salary:</strong> ₹{{ number_format($data['per_day_salary'], 2) }}</p>
+        <p><strong>Per Day Salary:</strong> ₹{{ number_format($data['per_day_net_salary'], 2) }}</p>
+
+      
         <p><strong>Present Days:</strong> {{ $data['present'] }}</p>
         <p><strong>Absent Days:</strong> {{ $data['absent'] }}</p>
         <p><strong>Overtime Days:</strong> {{ $data['overtime'] }}</p>

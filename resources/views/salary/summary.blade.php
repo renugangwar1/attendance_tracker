@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Monthly Attendance & Salary Summary</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -43,7 +44,7 @@
         }
 
         .card-container {
-            padding: 100px 20px 20px; /* Add top padding to push content below fixed top bar */
+            padding: 100px 20px 20px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
@@ -133,47 +134,78 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .credit-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            background-color: #e2e8f0;
+            color: #374151;
+            transition: 0.3s ease;
+        }
+
+        .credit-btn.credited {
+            background-color: #10b981;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="{{ route('users.index') }}" class="back-link">← Back to Dashboard</a>
-    </div>
+<div class="top-bar">
+    <a href="{{ route('users.index') }}" class="back-link">← Back to Dashboard</a>
+</div>
 
-    <div class="card-container">
-        @foreach ($monthly_summary as $month => $data)
-            <div class="month-card">
-                <h3>{{ \Carbon\Carbon::parse($month)->format('F Y') }}</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($data['days'] as $day)
-                            @if ($day['status'] !== 'unmarked')
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($day['date'])->format('d-m-Y') }}</td>
-                                    <td>{{ ucfirst($day['status']) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="summary">
-                    <p><strong>Working Days:</strong> {{ $data['working_days'] }}</p>
-                    <p><strong>Per Day Salary:</strong> ₹{{ number_format($data['per_day_salary'], 2) }}</p>
-                    <p><strong>Present Days:</strong> {{ $data['present'] + $data['overtime'] }}</p>
-                    <p><strong>Absent Days:</strong> {{ $data['absent'] }}</p>
-                    <p><strong>Overtime Days:</strong> {{ $data['overtime'] }}</p>
-                    <p><strong>Total Salary:</strong> ₹{{ number_format($data['salary'], 2) }}</p>
-                </div>
-            </div>
-        @endforeach
-    </div>
+<div class="card-container">
+    @foreach ($monthly_summary as $month => $data)
+        <div class="month-card">
+            <h3>{{ \Carbon\Carbon::parse($month)->format('F Y') }}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($data['days'] as $day)
+                        @if ($day['status'] !== 'unmarked')
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($day['date'])->format('d-m-Y') }}</td>
+                                <td>{{ ucfirst($day['status']) }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
+            <div class="summary">
+                <p><strong>Working Days:</strong> {{ $data['working_days'] }}</p>
+                <p><strong>Per Day Salary:</strong> ₹{{ number_format($data['per_day_net_salary'], 2) }}</p>
+ 
+                <p><strong>Present Days:</strong> {{ $data['present'] + $data['overtime'] }}</p>
+                <p><strong>Absent Days:</strong> {{ $data['absent'] }}</p>
+                <p><strong>Overtime Days:</strong> {{ $data['overtime'] }}</p>
+  <p><strong>Total Present (Present + Overtime):</strong> {{ $data['present'] + $data['overtime'] }}</p>
+        <p><strong>Total Salary (with overtime):</strong> ₹{{ number_format($data['salary'], 2) }}</p>
+ </div>
+ <form method="POST" action="{{ route('salary.toggleCredit', $user->id) }}" data-month="{{ $month }}" class="credit-form">
+    @csrf
+    <input type="hidden" name="month" value="{{ $month }}">
+    <input type="hidden" name="credited_salary" value="{{ $data['salary'] }}">
+    <button type="submit"
+        class="credit-btn {{ $data['is_credited'] ?? false ? 'credited' : '' }}">
+        {{ $data['is_credited'] ?? false ? 'Credited' : 'Not Credited' }}
+    </button>
+</form>
+
+
+        </div>
+    @endforeach
+</div>
+
 
 </body>
 </html>

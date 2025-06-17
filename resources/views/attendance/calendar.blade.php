@@ -162,7 +162,7 @@
             cursor: not-allowed;
         }
 
-        /* Optional: Add a hover effect to calendar days */
+       
         .fc-daygrid-day-frame {
             transition: background-color 0.2s;
             cursor: pointer;

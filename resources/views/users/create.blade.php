@@ -139,7 +139,7 @@
     @if (isset($user))
         @if (request()->query('edit') == 'true')
             <h2>Edit Your Details</h2>
-<p><em>Note: Please fill in the <strong>Monthly In-Hand Salary</strong> and <strong>Working Days</strong> as per your salary calculation.</em></p>
+
             @if ($errors->any())
                 <div class="error-messages">
                     <ul>
@@ -174,7 +174,7 @@
         @endif
     @else
         <h2>Add Your Details</h2>
-<p><em>Note: Please fill in the <strong>Monthly In-Hand Salary</strong> and <strong>Working Days</strong> as per your salary calculation.</em></p>
+
 
         @if ($errors->any())
             <div class="error-messages">
